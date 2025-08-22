@@ -1284,11 +1284,11 @@ async def find_object(
             ["Code eq 'БП-000001'", "Description ne ''"]
         ]
     )] = None,
-    expand: Annotated[str, Field(
-        description="Поля для расширения связанных данных (OData $expand). "
-                   "Указываются через запятую",
-        examples=["Контрагент", "Склад,Номенклатура", "Владелец"]
-    )] = None
+    # expand: Annotated[str, Field(
+    #     description="Поля для расширения связанных данных (OData $expand). "
+    #                "Указываются через запятую",
+    #     examples=["Контрагент", "Склад,Номенклатура", "Владелец"]
+    # )] = None
 ) -> Dict[str, Any]:
     """
     Находит первую запись в указанном наборе сущностей, соответствующую условиям фильтрации.
@@ -1304,7 +1304,9 @@ async def find_object(
               - Строка с выражением OData $filter
               - Словарь {имя_поля: значение} для простых равенств
               - Список выражений для объединения через AND
-      expand: Поля для включения связанных данных (разделитель - запятая)
+
+
+      expand: (этот аргумент больше не поддерживается) Поля для включения связанных данных (разделитель - запятая)
     
     Returns:
       Dict с следующими полями:
@@ -1319,10 +1321,10 @@ async def find_object(
           find_object("Catalog_Контрагенты", filters={"Code": "БП-000001"})
         - Найти незаполненное платежное поручение: 
           find_object("Document_ПлатежноеПоручение", filters={"Posted": False})
-        - Найти номенклатуру с расширением данных единицы измерения:
-          find_object("Catalog_Номенклатура", filters={"Description": "Техническая поддержка ПО"}, expand="ЕдиницаИзмерения")
+        - Найти номенклатуру по описанию:
+          find_object("Catalog_Номенклатура", filters={"Description": "Техническая поддержка ПО"})
     """
-    data = await asyncio.to_thread(_server.find_object, object_name, filters, expand)
+    data = await asyncio.to_thread(_server.find_object, object_name, filters)
     return _json_ready(data)
 
 
